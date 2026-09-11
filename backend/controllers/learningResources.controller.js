@@ -50,5 +50,53 @@ async function addResource(req, res) {
     });
   }
 }
+// GET LEARNING RESOURCES FOR A COURSE
+async function getResources(req, res) {
+  try {
+    const { courseId } = req.params;
 
-module.exports = { addResource };
+    // Check if the course exists
+    const course = await pool.query(
+      'SELECT id FROM courses WHERE id = $1',
+      [courseId]
+    );
+
+    if (course.rows.length === 0) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    // Check that the trainee is enrolled in the course
+    const enrollment = await pool.query(
+      `SELECT id
+       FROM enrollments
+       WHERE course_id = $1 AND trainee_id = $2`,
+      [courseId, req.user.userId]
+    );
+
+    if (enrollment.rows.length === 0) {
+      return res.status(403).json({
+        error: 'You must be enrolled in this course to view its resources',
+      });
+    }
+
+    // Get the course resources
+    const result = await pool.query(
+      `SELECT id, course_id, title, type, url, created_at
+       FROM learning_resources
+       WHERE course_id = $1
+       ORDER BY created_at DESC`,
+      [courseId]
+    );
+
+    res.status(200).json({
+      resources: result.rows,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: 'Server error while fetching learning resources',
+    });
+  }
+}
+
+module.exports = { addResource, getResources };
