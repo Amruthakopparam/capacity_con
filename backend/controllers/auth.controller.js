@@ -7,30 +7,60 @@ async function signup(req, res) {
   try {
     const { name, email, password, role } = req.body;
 
+    // Check required fields
     if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({
+        error: 'Name, email and password are required',
+      });
+    }
+
+    // Check password strength
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+      console.log({
+      passwordLength: password.length,
+      passwordValid: passwordPattern.test(password),
+      });
+
+    if (!passwordPattern.test(password)) {
+      return res.status(400).json({
+        error:
+          'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character',
+      });
     }
 
     // Check if user already exists
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const existing = await pool.query(
+      'SELECT id FROM users WHERE email = $1',
+      [email]
+    );
+
     if (existing.rows.length > 0) {
-      return res.status(409).json({ error: 'Email already registered' });
+      return res.status(409).json({
+        error: 'Email already registered',
+      });
     }
 
     // Hash the password — NEVER store plain text
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (name, email, password_hash, role)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, name, email, role`,
+     `INSERT INTO users (name, email, password_hash, role, status)
+      VALUES ($1, $2, $3, $4, 'pending')
+      RETURNING id, name, email, role, status`, 
       [name, email, passwordHash, role || 'trainee']
     );
+    console.log('SIGNUP RESULT:', result.rows[0]);
 
-    res.status(201).json({ user: result.rows[0] });
+    res.status(201).json({
+      user: result.rows[0],
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error during signup' });
+
+    res.status(500).json({
+      error: 'Server error during signup',
+    });
   }
 }
 
@@ -39,38 +69,68 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
 
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
     if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({
+        error: 'Invalid email or password',
+      });
     }
 
     const user = result.rows[0];
 
     // Compare submitted password against the stored hash
-    const validPassword = await bcrypt.compare(password, user.password_hash);
+    const validPassword = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
     if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({
+        error: 'Invalid email or password',
+      });
     }
 
     if (user.status !== 'active') {
-      return res.status(403).json({ error: 'Account is not active' });
+      return res.status(403).json({
+        error: 'Account is not active',
+      });
     }
 
     // Create the JWT — this is what proves the user is logged in
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      {
+        userId: user.id,
+        role: user.role,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      {
+        expiresIn: '7d',
+      }
     );
 
     res.json({
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error during login' });
+
+    res.status(500).json({
+      error: 'Server error during login',
+    });
   }
 }
 
-module.exports = { signup, login };
+module.exports = {
+  signup,
+  login,
+};
