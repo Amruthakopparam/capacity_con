@@ -33,6 +33,29 @@ console.log(
 );
 
 const PORT = process.env.PORT || 5000;
+
+console.log(
+  'APP ROUTES:',
+  app._router.stack
+    .filter(layer => layer.route || layer.name === 'router')
+    .map(layer => ({
+      path: layer.route?.path || layer.regexp?.toString(),
+      methods: layer.route
+        ? Object.keys(layer.route.methods)
+        : 'router'
+    }))
+);
+console.log(
+  'APP ROUTES:',
+  app._router.stack
+    .filter(layer => layer.route || layer.name === 'router')
+    .map(layer => ({
+      path: layer.route?.path || layer.regexp?.toString(),
+      methods: layer.route
+        ? Object.keys(layer.route.methods)
+        : 'router'
+    }))
+);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
