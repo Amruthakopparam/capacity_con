@@ -8,12 +8,18 @@ const {
   deleteQuestion,
 } = require('../controllers/questions.controller');
 
-const { verifyToken, requireRole } = require('../middleware/auth');
+const {
+  verifyToken,
+  requireRole,
+  requireVerifiedTrainer,
+} = require('../middleware/auth');
 
-// Add a question — only logged-in trainers can do this
-router.post('/', verifyToken, requireRole('trainer'), addQuestion);
-router.post('/bulk', verifyToken, requireRole('trainer'), addQuestionsBulk);
-router.put('/:questionId', verifyToken, requireRole('trainer'), updateQuestion);
-router.delete('/:questionId', verifyToken, requireRole('trainer'), deleteQuestion);
+// Question management: only verified trainers
+const trainerOnly = [verifyToken, requireRole('trainer'), requireVerifiedTrainer];
+
+router.post('/', ...trainerOnly, addQuestion);
+router.post('/bulk', ...trainerOnly, addQuestionsBulk);
+router.put('/:questionId', ...trainerOnly, updateQuestion);
+router.delete('/:questionId', ...trainerOnly, deleteQuestion);
 
 module.exports = router;

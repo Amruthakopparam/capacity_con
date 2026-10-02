@@ -1,4 +1,4 @@
- const express = require('express');
+const express = require('express');
 const router = express.Router();
 
 const {
@@ -7,10 +7,22 @@ const {
   submitAssessment,
 } = require('../controllers/assessments.controller');
 
-const { verifyToken, requireRole } = require('../middleware/auth');
+const {
+  verifyToken,
+  requireRole,
+  requireVerifiedTrainer,
+} = require('../middleware/auth');
 
-// Create an assessment — only logged-in trainers can do this
-router.post('/', verifyToken, requireRole('trainer'), createAssessment);
+// Create an assessment: only verified trainers can do this
+router.post(
+  '/',
+  verifyToken,
+  requireRole('trainer'),
+  requireVerifiedTrainer,
+  createAssessment
+);
+
+// Trainees take assessments (no trainer verification needed)
 router.post('/:assessmentId/start', verifyToken, requireRole('trainee'), startAssessment);
 router.post('/:assessmentId/submit', verifyToken, requireRole('trainee'), submitAssessment);
 
