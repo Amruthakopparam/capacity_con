@@ -9,6 +9,8 @@ const learningResourcesRoutes = require('./routes/learningResources.routes');
 const questionsRoutes = require('./routes/questions.routes');
 const assessmentsRoutes = require('./routes/assessments.routes');
 const documentsRoutes = require('./routes/documents.routes');
+const skillFieldsRoutes = require('./routes/skillFields.routes');
+const trainerRoutes = require('./routes/trainer.routes');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use('/api/learning-resources', learningResourcesRoutes);
 app.use('/api/questions', questionsRoutes);
 app.use('/api/assessments', assessmentsRoutes);
 app.use('/api/documents', documentsRoutes);
+app.use('/api/skill-fields', skillFieldsRoutes);
+app.use('/api/trainer', trainerRoutes);
 
 app.get('/', (req, res) => {
   res.send('Capacity Connect backend is running');
