@@ -13,8 +13,11 @@ import HomePage from './pages/HomePage'
 import AuthPage from './pages/AuthPage'
 import TraineeDashboard from './pages/TraineeDashboard'
 import TrainerDashboard from './pages/TrainerDashboard'
+import TrainerVerification from './pages/TrainerVerification'
+import TrainerCoursesPlaceholder from './pages/TrainerCoursesPlaceholder'
 import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
+
 
 function AppContent() {
   const navigate = useNavigate()
@@ -203,6 +206,35 @@ function AppContent() {
             />
           </ProtectedRoute>
         }
+              <Route
+        path="/trainer-dashboard/verification"
+        element={
+          <ProtectedRoute
+            user={user}
+            allowedRole="trainer"
+          >
+            <TrainerVerification
+              user={user}
+              onLogout={handleLogout}
+            />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trainer-dashboard/courses"
+        element={
+          <ProtectedRoute
+            user={user}
+            allowedRole="trainer"
+          >
+            <TrainerCoursesPlaceholder
+              user={user}
+              onLogout={handleLogout}
+            />
+          </ProtectedRoute>
+        }
+      
       />
 
       {/* ================= ADMIN ================= */}
