@@ -7,6 +7,7 @@ const {
   addExperience,
   updateExperience,
   deleteExperience,
+  submitForReview,
 } = require('../controllers/trainerProfile.controller');
 const { verifyToken, requireRole } = require('../middleware/auth');
 
@@ -20,5 +21,6 @@ router.put('/fields', setFields);
 router.post('/experiences', addExperience);
 router.put('/experiences/:id', updateExperience);
 router.delete('/experiences/:id', deleteExperience);
+router.post('/submit', submitForReview);
 
 module.exports = router;

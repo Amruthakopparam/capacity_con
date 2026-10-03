@@ -80,8 +80,7 @@ async function getProfile(req, res) {
     const userId = req.user.userId;
 
     const profile = await pool.query(
-      `SELECT verification_status, review_reason, resume_original_name,
-              resume_uploaded_at, submitted_at, reviewed_at
+      `SELECT verification_status, review_reason, submitted_at, reviewed_at
        FROM trainer_profiles WHERE user_id = $1`,
       [userId]
     );
@@ -105,6 +104,16 @@ async function getProfile(req, res) {
       [userId]
     );
 
+    // Resume lives in the shared documents table (document_type = 'resume')
+    const resume = await pool.query(
+      `SELECT file_url, uploaded_at, verification_status
+       FROM documents
+       WHERE user_id = $1 AND document_type = 'resume'
+       ORDER BY uploaded_at DESC
+       LIMIT 1`,
+      [userId]
+    );
+
     const p = profile.rows[0];
     const formatted = experiences.rows.map(formatExperience);
 
@@ -113,8 +122,12 @@ async function getProfile(req, res) {
       reviewReason: p.review_reason,
       submittedAt: p.submitted_at,
       reviewedAt: p.reviewed_at,
-      resume: p.resume_original_name
-        ? { name: p.resume_original_name, uploadedAt: p.resume_uploaded_at }
+      resume: resume.rows.length > 0
+        ? {
+            fileUrl: resume.rows[0].file_url,
+            uploadedAt: resume.rows[0].uploaded_at,
+            verificationStatus: resume.rows[0].verification_status,
+          }
         : null,
       fields: fields.rows.map((f) => ({
         id: f.id,
@@ -274,6 +287,76 @@ async function deleteExperience(req, res) {
   }
 }
 
+// POST /api/trainer/submit
+// Moves the trainer from profile_incomplete/rejected to pending_review
+async function submitForReview(req, res) {
+  try {
+    if (!(await ensureEditable(req, res))) return;
+
+    const userId = req.user.userId;
+
+    const fieldsResult = await pool.query(
+      'SELECT COUNT(*)::int AS count FROM trainer_fields WHERE trainer_id = $1',
+      [userId]
+    );
+
+    if (fieldsResult.rows[0].count === 0) {
+      return res.status(400).json({
+        error: 'Select at least one field you will teach before submitting',
+      });
+    }
+
+    const experienceResult = await pool.query(
+      'SELECT COUNT(*)::int AS count FROM work_experiences WHERE trainer_id = $1',
+      [userId]
+    );
+
+    const resumeResult = await pool.query(
+      `SELECT COUNT(*)::int AS count FROM documents
+       WHERE user_id = $1 AND document_type = 'resume'`,
+      [userId]
+    );
+
+    if (
+      experienceResult.rows[0].count === 0 &&
+      resumeResult.rows[0].count === 0
+    ) {
+      return res.status(400).json({
+        error:
+          'Add at least one work experience or upload your resume before submitting',
+      });
+    }
+
+    const update = await pool.query(
+      `UPDATE trainer_profiles
+       SET verification_status = 'pending_review',
+           submitted_at = NOW(),
+           review_reason = NULL,
+           reviewed_at = NULL,
+           reviewed_by = NULL
+       WHERE user_id = $1 AND verification_status IN ('profile_incomplete', 'rejected')
+       RETURNING verification_status, submitted_at`,
+      [userId]
+    );
+
+    if (update.rows.length === 0) {
+      return res.status(403).json({
+        error: 'Your profile cannot be submitted in its current status',
+        code: 'PROFILE_LOCKED',
+      });
+    }
+
+    res.json({
+      message: 'Your application has been submitted for review',
+      verificationStatus: update.rows[0].verification_status,
+      submittedAt: update.rows[0].submitted_at,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error submitting profile' });
+  }
+}
+
 module.exports = {
   listSkillFields,
   getProfile,
@@ -281,4 +364,5 @@ module.exports = {
   addExperience,
   updateExperience,
   deleteExperience,
+  submitForReview,
 };
