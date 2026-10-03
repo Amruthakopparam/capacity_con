@@ -17,6 +17,7 @@ import TrainerVerification from './pages/TrainerVerification'
 import TrainerCoursesPlaceholder from './pages/TrainerCoursesPlaceholder'
 import AdminDashboard from './pages/AdminDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminTrainerReview from './pages/AdminTrainerReview'
 
 
 function AppContent() {
@@ -240,6 +241,15 @@ function AppContent() {
               user={user}
               onLogout={handleLogout}
             />
+          </ProtectedRoute>
+        }
+      />
+
+            <Route
+        path="/admin-dashboard/trainer-review"
+        element={
+          <ProtectedRoute user={user} allowedRole="admin">
+            <AdminTrainerReview user={user} onLogout={handleLogout} />
           </ProtectedRoute>
         }
       />
