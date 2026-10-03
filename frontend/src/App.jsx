@@ -193,34 +193,24 @@ function AppContent() {
 
       {/* ================= TRAINER ================= */}
 
-      <Route
+            <Route
         path="/trainer-dashboard"
         element={
-          <ProtectedRoute
-            user={user}
-            allowedRole="trainer"
-          >
-            <TrainerDashboard
-              user={user}
-              onLogout={handleLogout}
-            />
-          </ProtectedRoute>
-        }
-              <Route
-        path="/trainer-dashboard/verification"
-        element={
-          <ProtectedRoute
-            user={user}
-            allowedRole="trainer"
-          >
-            <TrainerVerification
-              user={user}
-              onLogout={handleLogout}
-            />
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerDashboard user={user} onLogout={handleLogout} />
           </ProtectedRoute>
         }
       />
 
+      <Route
+        path="/trainer-dashboard/verification"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerVerification user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+     
       <Route
         path="/trainer-dashboard/courses"
         element={
