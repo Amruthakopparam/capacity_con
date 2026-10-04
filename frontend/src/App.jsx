@@ -1,33 +1,32 @@
-import { useState } from 'react'
+import { useState } from "react"
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
   useNavigate,
-} from 'react-router-dom'
+} from "react-router-dom"
 
-import './App.css'
+import "./App.css"
 
-import HomePage from './pages/HomePage'
-import AuthPage from './pages/AuthPage'
-import TraineeDashboard from './pages/TraineeDashboard'
-import TrainerDashboard from './pages/TrainerDashboard'
-import TrainerVerification from './pages/TrainerVerification'
-import TrainerCoursesPlaceholder from './pages/TrainerCoursesPlaceholder'
-import AdminDashboard from './pages/AdminDashboard'
-import ProtectedRoute from './components/ProtectedRoute'
-import AdminTrainerReview from './pages/AdminTrainerReview'
+import HomePage from "./pages/HomePage"
+import AuthPage from "./pages/AuthPage"
+import TraineeDashboard from "./pages/TraineeDashboard"
+import TrainerDashboard from "./pages/TrainerDashboard"
+import TrainerVerification from "./pages/TrainerVerification"
+import TrainerCoursesPlaceholder from "./pages/TrainerCoursesPlaceholder"
+import TrainerSkillTest from "./pages/TrainerSkillTest"
+import AdminDashboard from "./pages/AdminDashboard"
+import ProtectedRoute from "./components/ProtectedRoute"
+import AdminTrainerReview from "./pages/AdminTrainerReview"
+import AdminSkillTestQuestions from "./pages/AdminSkillTestQuestions"
 
 
 function AppContent() {
   const navigate = useNavigate()
 
-  // Restore user after refreshing the page
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem(
-      'capacity_connect_user'
-    )
+    const savedUser = localStorage.getItem("capacity_connect_user")
 
     if (!savedUser) {
       return null
@@ -36,33 +35,29 @@ function AppContent() {
     try {
       return JSON.parse(savedUser)
     } catch {
-      localStorage.removeItem('capacity_connect_user')
+      localStorage.removeItem("capacity_connect_user")
       return null
     }
   })
 
   async function handleLogin(role, email, password) {
-    const response = await fetch(
-      'http://localhost:5000/api/auth/login',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    )
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
 
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.error || 'Login failed')
+      throw new Error(data.error || "Login failed")
     }
 
-    // Make sure the selected role matches the database role
     if (
       data.user &&
       data.user.role &&
@@ -73,106 +68,72 @@ function AppContent() {
       )
     }
 
-    // Store JWT
-    localStorage.setItem(
-      'capacity_connect_token',
-      data.token
-    )
-
-    // Store user so the session survives page refresh
-    localStorage.setItem(
-      'capacity_connect_user',
-      JSON.stringify(data.user)
-    )
+    localStorage.setItem("capacity_connect_token", data.token)
+    localStorage.setItem("capacity_connect_user", JSON.stringify(data.user))
 
     setUser(data.user)
 
-    // Send user to the correct dashboard
     const dashboardRoutes = {
-      trainee: '/trainee-dashboard',
-      trainer: '/trainer-dashboard',
-      admin: '/admin-dashboard',
+      trainee: "/trainee-dashboard",
+      trainer: "/trainer-dashboard",
+      admin: "/admin-dashboard",
     }
 
-    navigate(
-      dashboardRoutes[data.user.role.toLowerCase()] || '/'
-    )
+    navigate(dashboardRoutes[data.user.role.toLowerCase()] || "/")
   }
 
-  async function handleSignup(
-    role,
-    name,
-    email,
-    password
-  ) {
-    const response = await fetch(
-      'http://localhost:5000/api/auth/signup',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
-        }),
-      }
-    )
+  async function handleSignup(role, name, email, password) {
+    const response = await fetch("http://localhost:5000/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        role,
+      }),
+    })
 
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.error || 'Signup failed')
+      throw new Error(data.error || "Signup failed")
     }
 
-    // Account is created as pending by the backend
     navigate(`/login/${role}`, {
       state: {
         success:
-          'Account created successfully. Your account is waiting for Admin approval.',
+          "Account created successfully. Your account is waiting for Admin approval.",
       },
     })
   }
 
   function handleLogout() {
-    localStorage.removeItem('capacity_connect_token')
-    localStorage.removeItem('capacity_connect_user')
+    localStorage.removeItem("capacity_connect_token")
+    localStorage.removeItem("capacity_connect_user")
 
     setUser(null)
-    navigate('/')
+    navigate("/")
   }
 
   return (
     <Routes>
       {/* ================= HOME ================= */}
 
-      <Route
-        path="/"
-        element={<HomePage />}
-      />
+      <Route path="/" element={<HomePage />} />
 
       {/* ================= AUTH ================= */}
 
       <Route
         path="/login/:role"
-        element={
-          <AuthPage
-            mode="login"
-            onLogin={handleLogin}
-          />
-        }
+        element={<AuthPage mode="login" onLogin={handleLogin} />}
       />
 
       <Route
         path="/signup/:role"
-        element={
-          <AuthPage
-            mode="signup"
-            onSignup={handleSignup}
-          />
-        }
+        element={<AuthPage mode="signup" onSignup={handleSignup} />}
       />
 
       {/* ================= TRAINEE ================= */}
@@ -180,21 +141,15 @@ function AppContent() {
       <Route
         path="/trainee-dashboard"
         element={
-          <ProtectedRoute
-            user={user}
-            allowedRole="trainee"
-          >
-            <TraineeDashboard
-              user={user}
-              onLogout={handleLogout}
-            />
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeDashboard user={user} onLogout={handleLogout} />
           </ProtectedRoute>
         }
       />
 
       {/* ================= TRAINER ================= */}
 
-            <Route
+      <Route
         path="/trainer-dashboard"
         element={
           <ProtectedRoute user={user} allowedRole="trainer">
@@ -211,21 +166,23 @@ function AppContent() {
           </ProtectedRoute>
         }
       />
-     
+
+      <Route
+        path="/trainer-dashboard/skill-test"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerSkillTest user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/trainer-dashboard/courses"
         element={
-          <ProtectedRoute
-            user={user}
-            allowedRole="trainer"
-          >
-            <TrainerCoursesPlaceholder
-              user={user}
-              onLogout={handleLogout}
-            />
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerCoursesPlaceholder user={user} onLogout={handleLogout} />
           </ProtectedRoute>
         }
-      
       />
 
       {/* ================= ADMIN ================= */}
@@ -233,19 +190,13 @@ function AppContent() {
       <Route
         path="/admin-dashboard"
         element={
-          <ProtectedRoute
-            user={user}
-            allowedRole="admin"
-          >
-            <AdminDashboard
-              user={user}
-              onLogout={handleLogout}
-            />
+          <ProtectedRoute user={user} allowedRole="admin">
+            <AdminDashboard user={user} onLogout={handleLogout} />
           </ProtectedRoute>
         }
       />
 
-            <Route
+      <Route
         path="/admin-dashboard/trainer-review"
         element={
           <ProtectedRoute user={user} allowedRole="admin">
@@ -254,12 +205,18 @@ function AppContent() {
         }
       />
 
+      <Route
+        path="/admin-dashboard/skill-test-questions"
+        element={
+          <ProtectedRoute user={user} allowedRole="admin">
+            <AdminSkillTestQuestions user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
       {/* ================= FALLBACK ================= */}
 
-      <Route
-        path="*"
-        element={<Navigate to="/" replace />}
-      />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
