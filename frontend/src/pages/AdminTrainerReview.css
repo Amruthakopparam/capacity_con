@@ -1,0 +1,109 @@
+.atr-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+.atr-list {
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.atr-trainer-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.atr-trainer-row:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.atr-trainer-row.active {
+  border-color: #4f46e5;
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.atr-date {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.atr-detail {
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.atr-section {
+  margin-top: 16px;
+}
+
+.atr-exp-row {
+  padding: 6px 0;
+}
+
+.atr-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.atr-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.atr-btn-approve {
+  background: #16a34a;
+  color: white;
+}
+
+.atr-btn-reject {
+  background: #dc2626;
+  color: white;
+}
+
+.atr-reject-form {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.atr-reject-form textarea {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #ddd);
+}
+
+.atr-alert {
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.atr-alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.atr-alert.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.atr-muted {
+  opacity: 0.7;
+}

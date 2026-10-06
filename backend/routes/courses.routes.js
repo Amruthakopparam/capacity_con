@@ -1,11 +1,30 @@
-const express = require('express');
+﻿const express = require("express");
 const router = express.Router();
 
-const { createCourse, getCourses } = require('../controllers/courses.controller');
-const { verifyToken, requireRole } = require('../middleware/auth');
+const {
+  createCourse,
+  getCourses,
+  getMyCourses,
+  getCourseById,
+} = require("../controllers/courses.controller");
+const { listBatchesForCoursePublic } = require("../controllers/batches.controller");
+const {
+  verifyToken,
+  requireRole,
+  requireFieldVerified,
+} = require("../middleware/auth");
 
-// Create a course — only logged-in trainers can do this
-router.post('/', verifyToken, requireRole('trainer'), createCourse);
-// Get all courses
-router.get('/', verifyToken, getCourses);
+router.post(
+  "/",
+  verifyToken,
+  requireRole("trainer"),
+  requireFieldVerified,
+  createCourse
+);
+
+router.get("/mine", verifyToken, requireRole("trainer"), getMyCourses);
+router.get("/:courseId/batches", verifyToken, listBatchesForCoursePublic);
+router.get("/", verifyToken, getCourses);
+router.get("/:id", verifyToken, getCourseById);
+
 module.exports = router;

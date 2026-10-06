@@ -1,0 +1,310 @@
+.tc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.tc-new-btn {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tc-new-btn:hover {
+  background: var(--accent-hover);
+}
+
+.tc-error {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger-text);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.tc-form {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tc-form h3 {
+  margin: 0 0 6px 0;
+  color: var(--text);
+}
+
+.tc-form input,
+.tc-form textarea,
+.tc-form select {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.tc-form textarea {
+  min-height: 60px;
+}
+
+.tc-form button {
+  align-self: flex-start;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tc-form button:hover {
+  background: var(--accent-hover);
+}
+
+.tc-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tc-level-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tc-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.tc-course-card {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.tc-course-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.tc-course-card h3 {
+  margin: 10px 0 6px 0;
+  color: var(--text);
+}
+
+.tc-course-card p {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin: 0 0 12px 0;
+}
+
+.tc-manage-link {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.tc-level-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75em;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.tc-level-beginner {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.tc-level-intermediate {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tc-level-advanced {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.tc-back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tc-detail-header {
+  margin-bottom: 20px;
+}
+
+.tc-detail-header h2 {
+  margin: 10px 0 6px 0;
+}
+
+.tc-detail-header p {
+  color: var(--text-muted);
+}
+
+.tc-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tc-tabs button {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+}
+
+.tc-tabs button.tc-tab-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tc-options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tc-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tc-option-row span {
+  width: 20px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.tc-option-row input[type="text"] {
+  flex: 1;
+}
+
+.tc-option-row label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+.tc-marks-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tc-marks-row input {
+  width: 80px;
+}
+
+.tc-hint {
+  color: var(--text-muted);
+  font-size: 0.85em;
+  margin: 0;
+}
+
+.tc-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tc-item-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+.tc-item-card a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tc-item-type {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8em;
+  text-transform: capitalize;
+}
+
+.tc-question-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  background: var(--surface);
+}
+
+.tc-question-text {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.tc-marks-tag {
+  font-weight: normal;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+.tc-question-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  color: var(--text-muted);
+}
+
+.tc-correct {
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.tc-danger-btn {
+  background: var(--danger-text);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.85em;
+}
