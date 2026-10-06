@@ -1,4 +1,4 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import {
   BrowserRouter,
   Routes,
@@ -12,14 +12,25 @@ import "./App.css"
 import HomePage from "./pages/HomePage"
 import AuthPage from "./pages/AuthPage"
 import TraineeDashboard from "./pages/TraineeDashboard"
+import TraineeBrowseCourses from "./pages/TraineeBrowseCourses"
+import TraineeMyCourses from "./pages/TraineeMyCourses"
+import TraineeCourseDetail from "./pages/TraineeCourseDetail"
+import TraineeAssessment from "./pages/TraineeAssessment"
 import TrainerDashboard from "./pages/TrainerDashboard"
 import TrainerVerification from "./pages/TrainerVerification"
-import TrainerCoursesPlaceholder from "./pages/TrainerCoursesPlaceholder"
+import TrainerCourses from "./pages/TrainerCourses"
+import TrainerCourseDetail from "./pages/TrainerCourseDetail"
 import TrainerSkillTest from "./pages/TrainerSkillTest"
+import TrainerCompetency from "./pages/TrainerCompetency"
+import TraineeCertificates from "./pages/TraineeCertificates"
 import AdminDashboard from "./pages/AdminDashboard"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AdminTrainerReview from "./pages/AdminTrainerReview"
 import AdminSkillTestQuestions from "./pages/AdminSkillTestQuestions"
+import Notifications from "./pages/Notifications"
+import { traineeNavItems } from "./config/traineeNav"
+import { trainerNavItems } from "./config/trainerNav"
+import { adminNavItems } from "./config/adminNav"
 
 
 function AppContent() {
@@ -147,6 +158,65 @@ function AppContent() {
         }
       />
 
+      <Route
+        path="/trainee-dashboard/courses"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeBrowseCourses user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trainee-dashboard/my-courses"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeMyCourses user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trainee-dashboard/courses/:courseId"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeCourseDetail user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trainee-dashboard/assessment/:assessmentId"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeAssessment user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/trainee-dashboard/certificates"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeCertificates user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+
+      <Route
+        path="/trainee-dashboard/notifications"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <Notifications
+              user={user}
+              onLogout={handleLogout}
+              navItems={traineeNavItems}
+              title="Notifications"
+            />
+          </ProtectedRoute>
+        }
+      />
+
       {/* ================= TRAINER ================= */}
 
       <Route
@@ -180,7 +250,39 @@ function AppContent() {
         path="/trainer-dashboard/courses"
         element={
           <ProtectedRoute user={user} allowedRole="trainer">
-            <TrainerCoursesPlaceholder user={user} onLogout={handleLogout} />
+            <TrainerCourses user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/trainer-dashboard/courses/:id"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerCourseDetail user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/trainer-dashboard/competency"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <TrainerCompetency user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+
+      <Route
+        path="/trainer-dashboard/notifications"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainer">
+            <Notifications
+              user={user}
+              onLogout={handleLogout}
+              navItems={trainerNavItems}
+              title="Notifications"
+            />
           </ProtectedRoute>
         }
       />
@@ -214,6 +316,20 @@ function AppContent() {
         }
       />
 
+      <Route
+        path="/admin-dashboard/notifications"
+        element={
+          <ProtectedRoute user={user} allowedRole="admin">
+            <Notifications
+              user={user}
+              onLogout={handleLogout}
+              navItems={adminNavItems}
+              title="Notifications"
+            />
+          </ProtectedRoute>
+        }
+      />
+
       {/* ================= FALLBACK ================= */}
 
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -230,3 +346,5 @@ function App() {
 }
 
 export default App
+
+

@@ -14,6 +14,7 @@ const trainerRoutes = require("./routes/trainer.routes");
 const adminRoutes = require("./routes/admin.routes");
 const skillTestRoutes = require("./routes/skillTest.routes");
 const notificationsRoutes = require("./routes/notifications.routes");
+const certificatesRoutes = require("./routes/certificates.routes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/trainer", trainerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/skill-test", skillTestRoutes);
 app.use("/api/notifications", notificationsRoutes);
+app.use("/api/certificates", certificatesRoutes);
 
 app.get("/", (req, res) => {
   res.send("Capacity Connect backend is running");

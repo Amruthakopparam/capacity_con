@@ -1,7 +1,8 @@
-const pool = require('../config/database');
+﻿const pool = require('../config/database');
 
 // A trainer can only edit their profile in these statuses
 const EDITABLE_STATUSES = ['profile_incomplete', 'rejected'];
+const EXPERIENCE_CAP_YEARS = 10;
 
 // GET /api/skill-fields
 async function listSkillFields(req, res) {
@@ -357,6 +358,82 @@ async function submitForReview(req, res) {
   }
 }
 
+// GET /api/trainer/competency
+// Returns a 0-100 competency score per field the trainer has PASSED.
+// competency = 40% experience component + 60% skill test score component
+async function getCompetency(req, res) {
+  try {
+    const userId = req.user.userId;
+
+    const experienceResult = await pool.query(
+      'SELECT COALESCE(SUM(years), 0) AS total_years FROM work_experiences WHERE trainer_id = $1',
+      [userId]
+    );
+    const totalYears = Number(experienceResult.rows[0].total_years);
+    const experienceScore = Math.min(totalYears / EXPERIENCE_CAP_YEARS, 1) * 100;
+
+    const fieldsResult = await pool.query(
+      `SELECT sf.id AS field_id, sf.name AS field_name, tf.test_status
+       FROM trainer_fields tf
+       JOIN skill_fields sf ON sf.id = tf.field_id
+       WHERE tf.trainer_id = $1
+       ORDER BY sf.name`,
+      [userId]
+    );
+
+    const competencies = [];
+
+    for (const field of fieldsResult.rows) {
+      if (field.test_status !== 'passed') {
+        competencies.push({
+          fieldId: field.field_id,
+          fieldName: field.field_name,
+          testStatus: field.test_status,
+          competency: null,
+        });
+        continue;
+      }
+
+      const attemptResult = await pool.query(
+        `SELECT score, total_questions
+         FROM skill_test_attempts
+         WHERE trainer_id = $1 AND field_id = $2 AND passed = true
+         ORDER BY submitted_at DESC
+         LIMIT 1`,
+        [userId, field.field_id]
+      );
+
+      let skillScore = 0;
+      if (attemptResult.rows.length > 0) {
+        const { score, total_questions } = attemptResult.rows[0];
+        skillScore = (Number(score) / Number(total_questions)) * 100;
+      }
+
+      const competency = Math.round(
+        experienceScore * 0.4 + skillScore * 0.6
+      );
+
+      competencies.push({
+        fieldId: field.field_id,
+        fieldName: field.field_name,
+        testStatus: field.test_status,
+        experienceScore: Math.round(experienceScore),
+        skillScore: Math.round(skillScore),
+        competency,
+      });
+    }
+
+    res.json({
+      totalYears,
+      experienceScore: Math.round(experienceScore),
+      fields: competencies,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error calculating competency' });
+  }
+}
+
 module.exports = {
   listSkillFields,
   getProfile,
@@ -365,4 +442,5 @@ module.exports = {
   updateExperience,
   deleteExperience,
   submitForReview,
+  getCompetency,
 };

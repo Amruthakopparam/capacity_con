@@ -1,0 +1,312 @@
+.tr-error {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--danger-text);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.tr-success {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--success-text);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.tr-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tr-filter-row select {
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.tr-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.tr-course-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tr-course-link {
+  text-decoration: none;
+  color: var(--text);
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.tr-course-link:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.tr-course-card h3 {
+  margin: 6px 0;
+  color: var(--text);
+}
+
+.tr-course-card p {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.tr-trainer-name {
+  font-size: 0.85em;
+  color: var(--text-subtle);
+  font-style: italic;
+}
+
+.tr-course-card button {
+  margin-top: 10px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tr-course-card button:hover {
+  background: var(--accent-hover);
+}
+
+.tr-course-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tr-manage-link {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9em;
+  margin-top: 8px;
+}
+
+.tr-level-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75em;
+  text-transform: capitalize;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.tr-level-beginner {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.tr-level-intermediate {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tr-level-advanced {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.tr-back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tr-detail-header {
+  margin-bottom: 20px;
+}
+
+.tr-detail-header h2 {
+  margin: 10px 0 6px 0;
+}
+
+.tr-detail-header p {
+  color: var(--text-muted);
+  margin: 4px 0;
+}
+
+.tr-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tr-tabs button {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+}
+
+.tr-tabs button.tr-tab-active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tr-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tr-item-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+.tr-item-card a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.tr-item-type {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.8em;
+  text-transform: capitalize;
+}
+
+.tr-assessment-card {
+  justify-content: space-between;
+}
+
+.tr-assessment-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tr-assessment-right button {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tr-status-tag {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.85em;
+}
+
+.tr-muted-text {
+  color: var(--text-muted);
+  font-size: 0.85em;
+  margin: 2px 0;
+}
+
+.tr-question-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  background: var(--surface);
+}
+
+.tr-question-text {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.tr-marks-tag {
+  font-weight: normal;
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+.tr-answer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tr-answer-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--text);
+}
+
+.tr-answer-option:hover {
+  border-color: var(--accent);
+}
+
+.tr-submit-btn {
+  margin-top: 16px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.tr-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tr-result-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  text-align: center;
+  background: var(--surface);
+}
+
+.tr-result-card button {
+  margin-top: 16px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+}

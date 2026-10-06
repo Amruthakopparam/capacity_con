@@ -1,20 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const { addResource } = require('../controllers/learningResources.controller');
+const { addResource, getResources } = require("../controllers/learningResources.controller");
 const {
   verifyToken,
   requireRole,
   requireVerifiedTrainer,
-} = require('../middleware/auth');
+} = require("../middleware/auth");
 
-// Add a learning resource: only verified trainers can do this
 router.post(
-  '/',
+  "/",
   verifyToken,
-  requireRole('trainer'),
+  requireRole("trainer"),
   requireVerifiedTrainer,
   addResource
 );
+
+router.get("/:courseId", verifyToken, getResources);
 
 module.exports = router;

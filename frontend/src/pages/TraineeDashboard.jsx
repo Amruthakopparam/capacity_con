@@ -1,78 +1,32 @@
-function TraineeDashboard({
-  user,
-  onLogout,
-}) {
+import { Link } from "react-router-dom"
+import DashboardLayout from "../layouts/DashboardLayout"
+import { traineeNavItems } from "../config/traineeNav"
+
+function TraineeDashboard({ user, onLogout }) {
   return (
-    <div className="app">
+    <DashboardLayout user={user} onLogout={onLogout} navItems={traineeNavItems} title="Trainee Workspace">
+      <h2 style={{ marginTop: 0 }}>Welcome, {user.name}</h2>
+      <p style={{ color: "var(--text-muted)" }}>
+        Continue your learning journey and build your professional competencies.
+      </p>
 
-      <header className="header">
-        <div>
-          <h1>CAPACITY CONNECT</h1>
+      <div className="dashboard-grid">
+        <Link to="/trainee-dashboard/courses" className="dashboard-card">
+          <h3>Browse Courses</h3>
+          <p>Discover new courses across beginner, intermediate and advanced levels.</p>
+        </Link>
 
-          <p>
-            Digital Capacity Building & Learning Management Portal
-          </p>
-        </div>
+        <Link to="/trainee-dashboard/my-courses" className="dashboard-card">
+          <h3>My Courses</h3>
+          <p>View your enrolled courses, resources and assessments.</p>
+        </Link>
 
-        <button
-          className="logout-button"
-          onClick={onLogout}
-        >
-          Logout
-        </button>
-      </header>
-
-      <main className="main">
-
-        <section className="dashboard">
-
-          <span className="dashboard-label">
-            Trainee Workspace
-          </span>
-
-          <h2>
-            Welcome, {user.name}
-          </h2>
-
-          <p>
-            Continue your learning journey and build your
-            professional competencies.
-          </p>
-
-          <div className="dashboard-grid">
-
-            <div className="dashboard-card">
-              <h3>My Courses</h3>
-              <p>
-                View your enrolled courses and track progress.
-              </p>
-            </div>
-
-            <div className="dashboard-card">
-              <h3>Learning Resources</h3>
-              <p>
-                Access videos, PDFs and presentations from your courses.
-              </p>
-            </div>
-
-            <div className="dashboard-card">
-              <h3>Assessments</h3>
-              <p>
-                Take assigned assessments and view your results.
-              </p>
-            </div>
-
-          </div>
-
-        </section>
-
-      </main>
-
-      <footer className="footer">
-        CAPACITY CONNECT — Learning & Capacity Building Portal
-      </footer>
-
-    </div>
+        <Link to="/trainee-dashboard/notifications" className="dashboard-card">
+          <h3>Notifications</h3>
+          <p>Check updates about your courses and assessments.</p>
+        </Link>
+      </div>
+    </DashboardLayout>
   )
 }
 

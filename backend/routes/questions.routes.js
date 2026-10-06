@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require("express");
 const router = express.Router();
 
 const {
@@ -6,20 +6,17 @@ const {
   addQuestionsBulk,
   updateQuestion,
   deleteQuestion,
-} = require('../controllers/questions.controller');
+  listQuestionsForCourse,
+} = require("../controllers/questions.controller");
 
-const {
-  verifyToken,
-  requireRole,
-  requireVerifiedTrainer,
-} = require('../middleware/auth');
+const { verifyToken, requireRole } = require("../middleware/auth");
 
-// Question management: only verified trainers
-const trainerOnly = [verifyToken, requireRole('trainer'), requireVerifiedTrainer];
+const trainerOnly = [verifyToken, requireRole("trainer")];
 
-router.post('/', ...trainerOnly, addQuestion);
-router.post('/bulk', ...trainerOnly, addQuestionsBulk);
-router.put('/:questionId', ...trainerOnly, updateQuestion);
-router.delete('/:questionId', ...trainerOnly, deleteQuestion);
+router.post("/", ...trainerOnly, addQuestion);
+router.post("/bulk", ...trainerOnly, addQuestionsBulk);
+router.get("/course/:courseId", ...trainerOnly, listQuestionsForCourse);
+router.put("/:questionId", ...trainerOnly, updateQuestion);
+router.delete("/:questionId", ...trainerOnly, deleteQuestion);
 
 module.exports = router;
