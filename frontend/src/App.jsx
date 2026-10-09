@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import {
   BrowserRouter,
   Routes,
@@ -16,6 +16,7 @@ import TraineeBrowseCourses from "./pages/TraineeBrowseCourses"
 import TraineeMyCourses from "./pages/TraineeMyCourses"
 import TraineeCourseDetail from "./pages/TraineeCourseDetail"
 import TraineeAssessment from "./pages/TraineeAssessment"
+import TraineeMainTest from "./pages/TraineeMainTest"
 import TrainerDashboard from "./pages/TrainerDashboard"
 import TrainerVerification from "./pages/TrainerVerification"
 import TrainerCourses from "./pages/TrainerCourses"
@@ -27,6 +28,7 @@ import AdminDashboard from "./pages/AdminDashboard"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AdminTrainerReview from "./pages/AdminTrainerReview"
 import AdminSkillTestQuestions from "./pages/AdminSkillTestQuestions"
+import AdminMainTestReview from "./pages/AdminMainTestReview"
 import Notifications from "./pages/Notifications"
 import { traineeNavItems } from "./config/traineeNav"
 import { trainerNavItems } from "./config/trainerNav"
@@ -193,6 +195,16 @@ function AppContent() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/trainee-dashboard/main-test/:batchId"
+        element={
+          <ProtectedRoute user={user} allowedRole="trainee">
+            <TraineeMainTest user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/trainee-dashboard/certificates"
         element={
@@ -317,6 +329,15 @@ function AppContent() {
       />
 
       <Route
+        path="/admin-dashboard/main-test-review"
+        element={
+          <ProtectedRoute user={user} allowedRole="admin">
+            <AdminMainTestReview user={user} onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
         path="/admin-dashboard/notifications"
         element={
           <ProtectedRoute user={user} allowedRole="admin">
@@ -346,5 +367,3 @@ function App() {
 }
 
 export default App
-
-
