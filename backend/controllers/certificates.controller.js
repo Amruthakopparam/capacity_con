@@ -4,6 +4,28 @@ const fs = require("fs");
 const { generateCertificatePDF } = require("../utils/certificate");
 
 const CERT_DIR = path.join(__dirname, "..", "uploads", "certificates");
+const TEMPLATE_DIR = path.join(__dirname, "..", "uploads", "certificate-templates");
+
+async function getActiveTemplate() {
+  const result = await pool.query(
+    `SELECT id, file_path, name_x, name_y, course_x, course_y, date_x, date_y, font_size
+     FROM certificate_templates WHERE is_active = true LIMIT 1`
+  );
+  if (result.rows.length === 0) return null;
+
+  const row = result.rows[0];
+  return {
+    id: row.id,
+    imagePath: path.join(TEMPLATE_DIR, row.file_path),
+    name_x: row.name_x,
+    name_y: row.name_y,
+    course_x: row.course_x,
+    course_y: row.course_y,
+    date_x: row.date_x,
+    date_y: row.date_y,
+    font_size: row.font_size,
+  };
+}
 
 // Shared PDF generation + DB insert. Returns existing cert if one already exists for this trainee/course.
 async function issueCertificateFile(traineeId, courseId, extra = {}) {
@@ -30,19 +52,30 @@ async function issueCertificateFile(traineeId, courseId, extra = {}) {
   const filePath = path.join(CERT_DIR, fileName);
   const issuedAt = new Date();
 
+  const template = await getActiveTemplate();
+
   await generateCertificatePDF({
     traineeName: traineeResult.rows[0].name,
     courseTitle: courseResult.rows[0].title,
     fieldName: courseResult.rows[0].field_name,
     issuedAt,
     filePath,
+    template,
   });
 
   const insertResult = await pool.query(
-    `INSERT INTO certificates (trainee_id, course_id, issued_at, file_path, batch_id, main_test_attempt_id)
-     VALUES ($1, $2, $3, $4, $5, $6)
+    `INSERT INTO certificates (trainee_id, course_id, issued_at, file_path, batch_id, main_test_attempt_id, template_id)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
      RETURNING id, trainee_id, course_id, issued_at, file_path`,
-    [traineeId, courseId, issuedAt, fileName, extra.batchId || null, extra.mainTestAttemptId || null]
+    [
+      traineeId,
+      courseId,
+      issuedAt,
+      fileName,
+      extra.batchId || null,
+      extra.mainTestAttemptId || null,
+      template ? template.id : null,
+    ]
   );
 
   return insertResult.rows[0];

@@ -17,6 +17,7 @@ const notificationsRoutes = require("./routes/notifications.routes");
 const certificatesRoutes = require("./routes/certificates.routes");
 const mainTestRoutes = require("./routes/mainTest.routes");
 const mainTestAdminRoutes = require("./routes/mainTestAdmin.routes");
+const certificateTemplatesRoutes = require("./routes/certificateTemplates.routes");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/notifications", notificationsRoutes);
 app.use("/api/certificates", certificatesRoutes);
 app.use("/api/main-tests", mainTestRoutes);
 app.use("/api/admin/main-tests", mainTestAdminRoutes);
+app.use("/api/admin/certificate-templates", certificateTemplatesRoutes);
 
 app.get("/", (req, res) => {
   res.send("Capacity Connect backend is running");
