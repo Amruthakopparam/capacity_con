@@ -12,3 +12,8 @@ dist/
 # Uploaded documents (keep the folder, ignore the files)
 backend/uploads/*
 !backend/uploads/.gitkeep
+# Ad-hoc local test artifacts
+*.pdf
+
+# Ad-hoc local test artifacts (root only)
+/*.pdf

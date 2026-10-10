@@ -1,5 +1,4 @@
-﻿const pool = require("../config/database");
-const { checkAndIssueCertificate } = require("./certificates.controller");
+const pool = require("../config/database");
 
 const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
@@ -347,17 +346,14 @@ async function submitAssessment(req, res) {
       [score, attemptId]
     );
 
-    let certificate = null;
-    try {
-      certificate = await checkAndIssueCertificate(traineeId, attempt.course_id);
-    } catch (certErr) {
-      console.error("Certificate generation failed:", certErr);
-    }
+    // NOTE: Certificate issuance no longer happens here. Module assessments are now
+    // practice-only; certificates are issued solely via the Main Test (see mainTest.controller.js),
+    // which blends weekly assessment average (20%) with main test score (80%).
 
     res.status(200).json({
       message: "Assessment submitted successfully",
       attempt: updateResult.rows[0],
-      certificate,
+      certificate: null,
     });
   } catch (err) {
     console.error(err);
