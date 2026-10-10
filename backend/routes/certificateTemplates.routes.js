@@ -7,8 +7,10 @@ const { verifyToken, requireRole } = require("../middleware/auth");
 const {
   uploadTemplate,
   listTemplates,
+  updateTemplateLayout,
   activateTemplate,
   deleteTemplate,
+  getTemplateImage,
 } = require("../controllers/certificateTemplates.controller");
 
 const router = express.Router();
@@ -40,7 +42,10 @@ const upload = multer({
 
 router.post("/", verifyToken, requireRole("admin"), upload.single("template"), uploadTemplate);
 router.get("/", verifyToken, requireRole("admin"), listTemplates);
+router.put("/:id/layout", verifyToken, requireRole("admin"), updateTemplateLayout);
 router.put("/:id/activate", verifyToken, requireRole("admin"), activateTemplate);
 router.delete("/:id", verifyToken, requireRole("admin"), deleteTemplate);
+router.get("/:id/image", verifyToken, requireRole("admin"), getTemplateImage);
 
 module.exports = router;
+

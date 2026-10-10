@@ -8,7 +8,11 @@ const TEMPLATE_DIR = path.join(__dirname, "..", "uploads", "certificate-template
 
 async function getActiveTemplate() {
   const result = await pool.query(
-    `SELECT id, file_path, name_x, name_y, course_x, course_y, date_x, date_y, font_size
+    `SELECT id, file_path,
+       name_x, name_y, name_width, name_height, name_rotation, name_font, name_font_size,
+       course_x, course_y, course_width, course_height, course_rotation, course_font, course_font_size,
+       field_x, field_y, field_width, field_height, field_rotation, field_font, field_font_size,
+       date_x, date_y, date_width, date_height, date_rotation, date_font, date_font_size
      FROM certificate_templates WHERE is_active = true LIMIT 1`
   );
   if (result.rows.length === 0) return null;
@@ -17,17 +21,25 @@ async function getActiveTemplate() {
   return {
     id: row.id,
     imagePath: path.join(TEMPLATE_DIR, row.file_path),
-    name_x: row.name_x,
-    name_y: row.name_y,
-    course_x: row.course_x,
-    course_y: row.course_y,
-    date_x: row.date_x,
-    date_y: row.date_y,
-    font_size: row.font_size,
+    name: {
+      x: row.name_x, y: row.name_y, width: row.name_width, height: row.name_height,
+      rotation: row.name_rotation, font: row.name_font, fontSize: row.name_font_size,
+    },
+    course: {
+      x: row.course_x, y: row.course_y, width: row.course_width, height: row.course_height,
+      rotation: row.course_rotation, font: row.course_font, fontSize: row.course_font_size,
+    },
+    field: {
+      x: row.field_x, y: row.field_y, width: row.field_width, height: row.field_height,
+      rotation: row.field_rotation, font: row.field_font, fontSize: row.field_font_size,
+    },
+    date: {
+      x: row.date_x, y: row.date_y, width: row.date_width, height: row.date_height,
+      rotation: row.date_rotation, font: row.date_font, fontSize: row.date_font_size,
+    },
   };
 }
 
-// Shared PDF generation + DB insert. Returns existing cert if one already exists for this trainee/course.
 async function issueCertificateFile(traineeId, courseId, extra = {}) {
   const existing = await pool.query(
     `SELECT id, trainee_id, course_id, issued_at, file_path
@@ -81,8 +93,6 @@ async function issueCertificateFile(traineeId, courseId, extra = {}) {
   return insertResult.rows[0];
 }
 
-// New eligibility formula: 0.20 * weekly-assessment-average + 0.80 * main-test-score, threshold 70%.
-// Skipped/unattempted weekly assessments count as 0%.
 async function checkMainTestCertificate(traineeId, mainTest, attempt) {
   const batchResult = await pool.query("SELECT course_id FROM batches WHERE id = $1", [mainTest.batch_id]);
   if (batchResult.rows.length === 0) return null;
@@ -107,7 +117,7 @@ async function checkMainTestCertificate(traineeId, mainTest, attempt) {
         [traineeId, a.id]
       );
 
-      if (attemptResult.rows.length === 0) continue; // counts as 0%
+      if (attemptResult.rows.length === 0) continue;
 
       const { score, max_marks } = attemptResult.rows[0];
       const maxMarks = Number(max_marks);
